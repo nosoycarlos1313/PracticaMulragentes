@@ -42,24 +42,33 @@ function crearCompradores() {
 
     //Creamos la lista de compradores
     for (let i = 0; i < numCompradores; i++) {
+        //Llamamos al constructor
         var comprador = new Comprador(ipComprador, 80, ipMonitor, 80, []);
 
+        //Creamos para recibir el ack de alta
         var respuesta_alta_ack=-1;
 
+        //Creamos una variable para recibir el MCI
         var respuesta_alta_mci=-1;
 
+        //Llamamos al método necesario para mandar el MSI y recibir el ACK o ERROR
 		await comprador.altaACK().then(function (resultado1) {
 			respuesta_alta_ack = resultado1
 		});
 
+        //Llamamos al método para recibir el MCI
         await comprador.altaMCI().then(function (resultado2) {
 			respuesta_alta_mci = resultado2
 		});
 
+        //Si recibimos tanto ACK como MCI
         if(((respuesta_alta_ack=!-1) && (respuesta_alta_ack.infoMensaje.tipo=='ACK')) && (respuesta_alta_mci=!-1)){
+            //Añadimos el comprador a la lista de compradores
             compradores.push(comprador);
+            //Añadimos un mensaje al log
             console.log("El comprador" + i + "se ha dado de alta correctamente");
         } else{
+            //Si no se hace el alta correctamente, añadimos mensaje al log y devolvemos nulo
             console.log("El comprador" + i + "ha fallado al darse de alta");
             return null;
         }
