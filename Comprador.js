@@ -1,22 +1,38 @@
 class Comprador {
-
-    //Constructor en el que me he basado
-    constructor(ip, puerto, ipMonitor, puertoMonitor, log) {
+	constructor(ip, puerto, ipMonitor, puertoMonitor, log) {
+    
+		//necesarios para las comunicaciones
+    
 		this.ip = ip;
 		this.puerto = puerto;
 		this.ipMonitor = ipMonitor;
 		this.puertoMonitor = puertoMonitor;
 		this.id = 0;
+     //
 		this.listaCompra = [];
 		this.listaTiendas = [];
-		this.tiempoConsumido = 0;
-		this.log = log;
 
-		this.GestorMensajes = new MessageManager(ipMonitor, puertoMonitor, ip, log);
+		this.GestorMensajes = new MessageManager(ipMonitor, puertoMonitor, ip);//, log);
+  }
+
+    async senalaEntrada(tiendaActual) {
+        //para generar el XML del mensaje InfoMensaje
+		var infoM = {
+			tipo_mensaje: 'entrada_tienda',
+			tipo_receptor: 'tienda',
+			id_receptor: this.listaTiendas[tiendaActual].id_tienda,
+			ip_receptor: this.listaTiendas[tiendaActual].ip_tienda,
+			puerto_receptor: this.listaTiendas[tiendaActual].puerto_tienda,
+			productos: this.listaCompra,
+			tiendas: this.listaTiendas
+		}
+        //esperas la respuesta de la tienda
+		var respuesta = await this.GestorMensajes.enviarXML(infoM);
+		return respuesta;
 	}
 
-    //Método para ver si quedan productos por comprar
-    productsLeft(){
+   //Método para ver si quedan productos por comprar
+   productsLeft(){
 
         if (this.listaCompra.length == 0){
             return false;
