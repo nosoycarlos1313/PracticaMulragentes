@@ -1,7 +1,0 @@
---reduceProductsQuantity tiene que mandar mensajes MCP y MVP además de controlar la lógica de la compra
-
---En gestión de mensajes tenemos que controlar cuando tenemos que mandar un mensaje y recibir dos(ACK o ERROR + mensaje de respuesta) o contar como que ack y error son tipos de datos y no habría problemas
-
---Hay que hacer una página web diferente a ellos y así puedo hacer bien la clase interfaz
-
---Utilizar siempre infoMensaje como cabecera
