@@ -47,6 +47,20 @@ class Comprador {
             
         return false;
     }
+
+    reduceProductsQuantity(id, quantity) {
+        for (var i = 0; i < this.listaCompra.length; i++) {
+          //Si encuentra el producto con la misma id en la lista de la compra del cliente le quita la cantidad especifica
+          if (this.listaCompra[i].id_producto == id && parseFloat(this.listaCompra[i].cantidad) > 0) {
+            if (parseFloat(this.listaCompra[i].cantidad) < parseFloat(quantity)){
+              this.listaCompra[i].cantidad = "0";
+            }else{
+              this.listaCompra[i].cantidad = this.listaCompra[i].cantidad - quantity;
+            }
+            break;
+          }
+        }
+      }
     
     //Método para añadir al Log los eventos que van ocurriendo
     addToLog(string) {
