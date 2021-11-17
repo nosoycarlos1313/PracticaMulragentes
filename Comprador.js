@@ -155,7 +155,7 @@ class Comprador {
         return respuesta;
     }
     
-     {
+     
     //Agrega de la lista de tiendas pasada, las tiendas que no conozca el cliente
 	agregarTiendas(tiendas) {
 		// Suponemos que la lista tiendas que nos pasan no tiene duplicados de tiendas
