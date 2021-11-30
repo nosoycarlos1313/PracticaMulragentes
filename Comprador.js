@@ -52,15 +52,18 @@ class Comprador {
           //Si encuentra el producto con la misma id en la lista de la compra del cliente le quita la cantidad especifica
           if (this.listaCompra[i].id_producto == id && parseFloat(this.listaCompra[i].cantidad) > 0) {
             if (parseFloat(this.listaCompra[i].cantidad) < parseFloat(quantity)){
+               var comprados = this.listaCompra[i].cantidad
               this.listaCompra[i].cantidad = "0";
+              return comprados
             }else{
               this.listaCompra[i].cantidad = this.listaCompra[i].cantidad - quantity;
+              return quantity
             }
-            break;
           }
         }
+        return 0
       }
-    
+
     //Método para añadir al Log los eventos que van ocurriendo
     addToLog(string) {
         this.log.push(string + "\n");
@@ -92,33 +95,9 @@ class Comprador {
 
         return respuesta_mci;
     }
-
-    /*
-    //Método para mandar SET y recibir ACK o ERROR(sería senalaEntrada)
-    async entrarTienda() {
-        var mensaje = {
-            tipo_emisor:'comprador',
-            id_emisor: this.id,
-            ip_emisor: this.ip,
-            puerto_emisor: this.puerto,
-            tipo_receptor: 'tienda',
-            id_receptor: this.listaTiendas[tiendaActual].id_tienda,
-            ip_receptor: this.listaTiendas[tiendaActual].ip_tienda,
-            puerto_receptor: this.listaTiendas[tiendaActual].puerto_tienda,//30
-            protocolo:'entrada_tienda',
-            tipo: 'MSET',
-            productos: this.listaCompra,
-            tiendas: this.listaTiendas
-        }
-
-        var respuesta_entrada = await this.GestorMensajes.enviarXML(mensaje);
-
-        return respuesta_entrada;
-    }
-    */
    
     //Método para mandar MSIP y recibir ACK o ERROR
-    async compraACK() {
+    async compraACK(tiendaActual) {
         var mensaje = {
             tipo_emisor:'comprador',
             id_emisor: this.id,
@@ -131,6 +110,27 @@ class Comprador {
             protocolo:'compra',
             tipo: 'MSIP',
             productos: this.listaCompra,
+            tiendas: this.listaTiendas
+        }
+
+        var respuesta_msip = await this.GestorMensajes.enviarXML(mensaje);
+
+        return respuesta_msip;
+    }
+
+    async compraMCP(tiendaActual,lista_comprados) {
+        var mensaje = {
+            tipo_emisor:'comprador',
+            id_emisor: this.id,
+            ip_emisor: this.ip,
+            puerto_emisor: this.puerto,
+            tipo_receptor: 'tienda',
+            id_receptor: this.listaTiendas[tiendaActual].id_tienda,
+            ip_receptor: this.listaTiendas[tiendaActual].ip_tienda,
+            puerto_receptor: this.listaTiendas[tiendaActual].puerto_tienda,//30
+            protocolo:'compra',
+            tipo: 'MCP',
+            productos: lista_comprados,
             tiendas: this.listaTiendas
         }
 
@@ -290,12 +290,12 @@ class Comprador {
             var entradaTienda1;
 
             //Llamamos a los métodos para mandar los mensajes de entrada a tienda
-            await this.entrarTienda().then(function (resultado2) {
+            await this.senalaEntrada().then(function (resultado2) {
                 entradaTienda1 = resultado2
             });
 
             //Si recibe un mensaje de error al entrar en la tienda
-            if ((entradaTienda == -1) || (entradaTienda.infoMensaje.tipo=='Error')) {
+            if ((entradaTienda1 == -1) || (entradaTienda1.infoMensaje.tipo=='Error')) {
                 //Añadimos un mensaje al log
                 this.addToLog("El comprador " + this.id + " ha fallado al entrar a la tienda " + this.listaTiendas[tiendaActual].id_tienda);
                 return null; // Finaliza si error devolviendo nulo
@@ -308,7 +308,7 @@ class Comprador {
             
             //Creamos una variable para gestionar la solicitud de los productos que tenemos que comprar
             var solicitudProductos;
-            //Llamamos al método necesario para mandar el MSIp y recibir el ACK de confirmación
+            //Llamamos al método necesario para mandar el MSIP y recibir el ACK de confirmación
             await this.compraACK(tiendaActual).then(function (resultado3) {
                 solicitudProductos = resultado3
             });
@@ -316,7 +316,7 @@ class Comprador {
             //Creamos una variable para rebir los productos que tiene la tienda
             var productosTienda;
             //Llamamos al método necesario para recibir el MIP
-            await this.compraMIP(tiendaActual).then(function (resultado4) {
+            await this.compraMIP().then(function (resultado4) {
                 productosTienda = resultado4
             });
             
@@ -327,8 +327,36 @@ class Comprador {
                 this.addToLog("El cliente " + this.id + " se dispone a comprar productos a la tienda " + this.listaTiendas[tiendaActual].id_tienda);
                 //Cogemos los productos que tiene la tienda para realizar la compra
                 productos=productosTienda.lista_productos;
-                //Llamamos al método que gestiona la compra de productos(lógica+mensajes)
-                this.reduceProductsQuantity(productos);
+                //Comprueba si tiene algun producto que necesite el cliente
+				var i = 0;
+
+                var lista_comprados=[];
+
+				while (i < productos.length) {
+					// Procesa los productos comprados
+					cantidad_comprado=this.reduceProductsQuantity(productos[i].id_producto, productos[i].cantidad);
+
+                    if(cantidad_comprado > 0){
+                        lista_comprados.push({
+                            id_producto: productos[i].id_producto,
+                            cantidad: cantidad_comprado
+                        });
+                    }
+					i++;
+				}
+
+                var confirmarCompra;
+
+                await this.compraMCP(tiendaActual,lista_comprados).then(function (resultado_compra) {
+                    confirmarCompra = resultado_compra
+                });
+
+                if (confirmarCompra == -1) {
+                    this.addToLog("El cliente " + this.id + " no ha podido realizar la compra");
+                    error=true;
+                }else{
+                    this.addToLog("El cliente " + this.id + " ha realizado la compra correctamente");  
+                }
     
             } else {
                 // Error en el envio de la lista de la compra
@@ -397,4 +425,4 @@ class Comprador {
         this.finalizarCliente();
     } 
        
-     }
+}
