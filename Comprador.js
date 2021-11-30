@@ -1,4 +1,3 @@
-
 class Comprador {
   constructor(ip, puerto, ipMonitor, puertoMonitor, log) {
     
@@ -255,26 +254,36 @@ class Comprador {
         //Creamos una variable para realizar el inicio de la actividad y mandar los mensajes correspondientes
         var inicioActividad;
 
-        //Llamamos al método pideIni para mandar MEI y recibir MAE
-        await this.pideIni().then(function (resultado1) {
-            inicioActividad = resultado1
-        });
+        //Creamo una variable para controlar que se realiza el inicio de actividad
+        var inicio_correcto=false;
 
-        //Si el mensaje recibido no es el MAE
-        if (inicioActividad == -1) {
-            //Añadimos un mensaje al log
-            this.addToLog("El comprador " + this.id + " ha obtenido los datos del monitor " + this.ipMonitor + " con fracaso.");
-            // Finaliza si error devolviendo nulo
-            return null;
+        //Hacemos un bucle que se ejecute hasta que el inicio de actividad se ejecute correctamente
+        while(inicio_correcto==false){
+            //Llamamos al método pideIni para mandar MEI y recibir MAE
+            await this.pideIni().then(function (resultado1) {
+                inicioActividad = resultado1
+            });
+
+            //Si el mensaje recibido no es el MAE
+            if (inicioActividad == -1) {
+                //Añadimos un mensaje al log
+                this.addToLog("El comprador " + this.id + " ha obtenido los datos del monitor " + this.ipMonitor + " con fracaso.");
+                // Finaliza si error devolviendo nulo
+                return null;
+            }
+            else{
+
+                //Si el mensaje es el MAE Añadimos un mensaje al log
+                this.addToLog("El comprador " + this.id + " ha obtenido los datos del monitor " + this.ipMonitor + " con exito.");
+                //Cambiamos el valor de la variable de control para que ya no se ejecute el bucle
+                inicio_correcto=true;
+            }
         }
-        
-        //Si el mensaje es el MAE Añadimos un mensaje al log
-        this.addToLog("El comprador " + this.id + " ha obtenido los datos del monitor " + this.ipMonitor + " con exito.");
-        
+
         //Creamos una variable para saber la tienda en la que nos encontramos según la lista de tiendas
         var tiendaActual = 0;
 
-        // Mientras queden productos por comprar
+        // Mientras queden productos por comprar y haya tiendas que visitar
         while (this.productsLeft() && tiendaActual < this.listaTiendas.length) {
 
             //Creamos una variable para la entrada a la tienda que nos toca
