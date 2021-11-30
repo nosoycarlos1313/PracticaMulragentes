@@ -64,6 +64,7 @@ class Comprador {
         return 0
       }
 
+
     //Método para añadir al Log los eventos que van ocurriendo
     addToLog(string) {
         this.log.push(string + "\n");
@@ -424,5 +425,5 @@ class Comprador {
         //Desconectamos al cliente
         this.finalizarCliente();
     } 
-       
 }
+
