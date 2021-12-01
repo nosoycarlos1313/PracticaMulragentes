@@ -1,0 +1,119 @@
+<!-- Autores
+    Nikola Dyulgerov
+    Ramón Jesús Martínez
+    Cristian Petrov -->
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+</head>
+
+<body>
+  <header>
+    <div class="jumbotron jumbotron-fluid bg-dark text-light">
+      <div class="container text-center align-self-start">
+        <h1 class="display-4 ">Panel de Compradores</h1>
+        <p class="lead"></p>
+      </div>
+    </div>
+  </header>
+  <main>
+    <div id="monitor" class="container align-start-center">
+      <div class="row">
+        <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+          <div class="card card-signin my-5">
+            <div class="card-body">
+              <h5 class="card-title text-center">Inicio</h5>
+              <form id="formulario" class="form-signin needs-validation" novalidate>
+                <div class="form-label-group mx-2 my-3">
+                  <label for="IpComprador">IP Comprador</label>
+                  <input type="string" id="ipComprador" class="form-control" placeholder="IP Comprador"  autofocus>
+                </div>
+                <div class="form-label-group mx-2 my-3">
+                  <label for="IpMonitor">IP Monitor</label>
+                  <input type="string" id="ipMonitor" class="form-control" placeholder="IP Monitor"  autofocus>
+                </div>
+                <div class="form-label-group mx-2 my-3">
+                  <label for="NumCompradores">Número de compradores</label>
+                  <input type="string" id="numCompradores" class="form-control" placeholder="Número de compradores"
+                     autofocus required>
+                </div>
+                <button id="enviar" class="btn btn-lg btn-primary btn-block text-camelcase">Enviar</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="panel" class="container align-start-center">
+      <!-- <button id="refresca" class="btn btn-lg btn-secondary btn-block text-camelcase">Simula acción Comprador 1</button> -->
+      <ul class="nav nav-pills" id="TabCompradores" role="tablist">
+        <!-- Aqui van los tabs de cada comprador para poder navegar entre paneles de información -->
+      </ul>
+      <div class="tab-content" id="TabContenido">
+        <div class="card-body">
+          <h2 class="card-title text-left mt-2 mb-4" id="idComprador"></h2>
+          <hr>
+        </div>
+        <div class="row">
+          <div class="col-sm-3">
+            <h6 class="mb-0">Lista Compra</h6>
+          </div> 
+          <div id="listaCompra" class="col-sm-9 text-secondary"></div>
+        </div>
+        <hr>
+        <div class="row">
+          <div class="col-sm-3">
+            <h6 class="mb-0">Lista Tiendas</h6>
+          </div> <div id="listaTiendas" class="col-sm-9 text-secondary"></div>
+        </div>
+        <hr>
+        <!-- <div class="row">
+          <div class="col-sm-3">
+            <h6 class="mb-0">Precio Total</h6>
+          </div> <div id="dineroGastado" class="col-sm-9 text-secondary"></div>
+        </div>
+        <hr> -->
+        <div class="row">
+          <div class="col-sm-3">
+            <h6 class="mb-0">Tiempo Invertido</h6>
+          </div> <div id="tiempoConsumido" class="col-sm-9 text-secondary"></div>
+        </div>
+        <hr>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text">Log</span>
+          </div>
+          <textarea id="log" class="form-control" aria-label="With textarea" disabled></textarea>
+        </div>
+      </div> 
+      <br>
+      <br>
+    </div>
+
+  </main>
+  <!-- Bootstrap para interfaz de usuario -->
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"
+        integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+    integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+    integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+    crossorigin="anonymous"></script>
+
+  <!-- JavaScript scripts para la funcionalidad y actualización de contenido -->
+  <script type="text/javascript" src="Comprador.js"></script>
+  <script type="text/javascript" src="EnvioMensajes.js"></script>
+  <script type="text/javascript" src="RecepcionMensajes.js"></script>
+  <script type="text/javascript" src="Interfaz.js"></script>
+  <script type="text/javascript" src="GestorMensajes.js"></script>
+    
+</body>
+
+</html>

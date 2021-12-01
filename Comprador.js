@@ -79,10 +79,10 @@ class Comprador {
             ip_emisor: this.ip,
             puerto_emisor: this.puerto,
             tipo_receptor: 'monitor',
-            ip_monitor: this.ipMonitor,
-            puerto_monitor: this.puertoMonitor,//30
+            ip_receptor: this.ipMonitor,
+            puerto_receptor: this.puertoMonitor,//30
             protocolo:'alta',
-            tipo: 'MSI',
+            tipo_mensaje: 'msi',
         }
 
         var respuesta = await this.GestorMensajes.enviarXML(mensaje);
@@ -252,8 +252,34 @@ class Comprador {
     //Método que controla la funcionalidad de los compradores
     async run() {
 
+        //Creamos para recibir el ack de alta
+        var respuesta_alta_ack=-1;
+
+        //Creamos una variable para recibir el MCI
+        var respuesta_alta_mci=-1;
+
+        //Llamamos al método necesario para mandar el MSI y recibir el ACK o ERROR
+		await this.altaACK().then(function (resultado1) {
+			respuesta_alta_ack = resultado1
+		});
+
+        //Llamamos al método para recibir el MCI
+        await this.altaMCI().then(function (resultado2) {
+			respuesta_alta_mci = resultado2
+		});
+
+        //Si recibimos tanto ACK como MCI
+        if(((respuesta_alta_ack=!-1) && (respuesta_alta_ack.infoMensaje.tipo=='ACK')) && (respuesta_alta_mci=!-1)){           
+            //Añadimos un mensaje al log
+            console.log("El comprador" + i + "se ha dado de alta correctamente");
+        } else{
+            //Si no se hace el alta correctamente, añadimos mensaje al log y devolvemos nulo
+            console.log("El comprador" + i + "ha fallado al darse de alta");
+            return null;
+        }
+
         //Creamos una variable para realizar el inicio de la actividad y mandar los mensajes correspondientes
-        var inicioActividad;
+        var inicioActividad=-1;
 
         //Creamo una variable para controlar que se realiza el inicio de actividad
         var inicio_correcto=false;

@@ -10,7 +10,7 @@ class MessageManager {
         this.tipo_emisor = 'comprador';
         this.puerto_emisor = -1;
 
-        this.urlMonitor = 'http://' + this.ip_monitor + ':' + this.puerto_monitor;
+        this.urlMonitor = 'http://' + this.ip_monitor + "/recibirMensajes.php";
         this.urlMonitorDuplicados = this.urlMonitor;
         this.urlMonitorCrearCliente = this.urlMonitor + "?" + this.interfaceCrearCliente;
 
@@ -25,7 +25,8 @@ class MessageManager {
         console.log(mensaje)
 
         $.ajax({
-            url: 'http://' + infoMensaje.ip_receptor + ":" + infoMensaje.puerto_receptor,
+            //url: 'http://' + infoMensaje.ip_receptor + ":" + infoMensaje.puerto_receptor,
+            url: 'http://' + infoMensaje.ip_receptor + "/recibirMensajes.php",
             data: mensaje,
             type: 'POST',
             async: false,
@@ -33,7 +34,7 @@ class MessageManager {
             // contentType:"string",
 
             beforeSend: function () {
-                if (infoMensaje.tipo_receptor != 'monitor') {
+                if (infoMensaje.tipo_receptor != 'receptor') {
                     $.post(
                         thisClass.urlMonitorDuplicados,
                         mensaje
@@ -185,7 +186,7 @@ class MessageManager {
             infoMensaje.id_receptor +
             "</ID>" +
             "<tipo>" +
-            infoMensaje.id_receptor +
+            infoMensaje.tipo_receptor +
             "</tipo>" +
             "</receptor>" +
 
