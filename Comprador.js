@@ -8,7 +8,6 @@ class Comprador {
 		this.ipMonitor = ipMonitor;
 		this.puertoMonitor = puertoMonitor;
 		this.id = 0;
-     //
 		this.listaCompra = [];
 		this.listaTiendas = [];
 
@@ -47,6 +46,7 @@ class Comprador {
         return false;
     }
 
+    //Función que controla la lógica de la compra de productos
     reduceProductsQuantity(id, quantity) {
         for (var i = 0; i < this.listaCompra.length; i++) {
           //Si encuentra el producto con la misma id en la lista de la compra del cliente le quita la cantidad especifica
@@ -119,6 +119,7 @@ class Comprador {
         return respuesta_msip;
     }
 
+    //Función para rebir los pertinentes mensajes de compra
     async compraMCP(tiendaActual,lista_comprados) {
         var mensaje = {
             tipo_emisor:'comprador',
@@ -232,7 +233,7 @@ class Comprador {
 		return respuesta;
 	}
 
-
+    //Función para mandar  y recibir los mensajes de salida de la tienda
     async salidaTienda(tiendaActual) {
 		var infoM = {
 			tipo_mensaje: 'salida_tienda',
